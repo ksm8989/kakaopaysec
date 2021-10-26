@@ -1,13 +1,12 @@
 package com.kakaopay.controller;
 
 import com.kakaopay.exception.BrCodeNotFoundException;
-import com.kakaopay.response.*;
-import com.kakaopay.service.FindService;
 import com.kakaopay.model.account.Account;
 import com.kakaopay.model.branch.Branch;
 import com.kakaopay.model.transaction.Transaction;
 import com.kakaopay.request.BrNameRequest;
-import com.test.kakaopay.response.*;
+import com.kakaopay.response.*;
+import com.kakaopay.service.FindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import java.util.*;
 @RestController
 @Api(tags = "Sample")
 @RequestMapping("/test/")
-public class FindController {
+public class TransactionAggregateController {
     @Autowired
     private FindService findService;
 

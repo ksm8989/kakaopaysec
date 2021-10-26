@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@WebMvcTest(FindController.class)
+@WebMvcTest(TransactionAggregateController.class)
 class FindControllerTest {
 
     @Autowired
