@@ -27,8 +27,6 @@ public class TransactionAggregateController {
     @GetMapping("/problem_1")
     @ApiOperation(value = "problem_1")
     public @ResponseBody List<SumAmtAccountByYearResponse> problem1(){
-        String maxKey = "";
-
         List<String> years = Arrays.asList("2018", "2019");
 
         // 연도별 계좌별 금액의 합
@@ -39,6 +37,7 @@ public class TransactionAggregateController {
 
 
         List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
+        String maxKey = "";
         for(Map<String, Long> acctSumAmt : acctSumAmtList){
             long maxSum = 0;
             maxKey = "";
