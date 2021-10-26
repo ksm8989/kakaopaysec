@@ -49,11 +49,6 @@ public class FindServiceImpl implements FindService{
     }
 
     @Override
-    public Account getAccount(String acctNo) {
-        return accountRepository.findByAcctNo(acctNo);
-    }
-
-    @Override
     public Branch getBranch(String placeCd) {
         return branchRepository.findByCode(placeCd);
     }

@@ -17,4 +17,8 @@ public class AccountFinder {
     public Map<String, Account> findAll() {
         return accountRepository.findAllAccount();
     }
+
+    public Account findBy(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber);
+    }
 }

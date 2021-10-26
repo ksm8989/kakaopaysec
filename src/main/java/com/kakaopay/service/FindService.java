@@ -9,8 +9,6 @@ import java.util.Map;
 public interface FindService {
     Map<String, Transaction> getAllTransactions();
 
-    Account getAccount(String acctNo);
-
     Branch getBranch(String placeCd);
 
 }

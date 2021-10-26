@@ -5,7 +5,7 @@ import java.util.Map;
 public interface AccountRepository {
     void save(Account account);
 
-    Account findByAcctNo(String acctNo);
+    Account findByAccountNumber(String accountNo);
 
     Map<String, Account> findAllAccount();
 }

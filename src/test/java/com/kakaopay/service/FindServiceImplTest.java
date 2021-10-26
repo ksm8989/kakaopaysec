@@ -2,6 +2,7 @@ package com.kakaopay.service;
 
 import com.kakaopay.AppConfig;
 import com.kakaopay.model.account.Account;
+import com.kakaopay.model.account.AccountFinder;
 import com.kakaopay.model.account.AccountRepository;
 import com.kakaopay.model.branch.Branch;
 import com.kakaopay.model.branch.BranchRepository;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 class FindServiceImplTest {
     private FindService findService;
+    private AccountFinder accountFinder;
     private AccountRepository accountRepository;
     private BranchRepository branchRepository;
     private TransactionRepository transactionRepository;
@@ -27,6 +29,7 @@ class FindServiceImplTest {
         branchRepository = appConfig.branchRepository();
         transactionRepository = appConfig.transactionRepository();
         findService = new FindServiceImpl(accountRepository, branchRepository, transactionRepository);
+        accountFinder = new AccountFinder(accountRepository);
     }
 
     @Test
@@ -34,7 +37,7 @@ class FindServiceImplTest {
     void getAccount_o() {
         Account expected = new Account("11111117", "케빈", "C");
         accountRepository.save(expected);
-        Account actual = findService.getAccount("11111117");
+        Account actual = accountFinder.findBy("11111117");
         Assertions.assertThat(expected).isEqualTo(actual);
 
     }
@@ -46,7 +49,7 @@ class FindServiceImplTest {
         Account actual = new Account("11111116", "린", "B");
         accountRepository.save(actual);
 
-        Assertions.assertThat(expected).isEqualTo(findService.getAccount("11111117"));
+        Assertions.assertThat(expected).isEqualTo(accountFinder.findBy("11111117"));
     }
 
     @Test

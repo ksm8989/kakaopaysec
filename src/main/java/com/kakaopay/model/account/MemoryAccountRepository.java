@@ -12,8 +12,8 @@ public class MemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Account findByAcctNo(String acctNo) {
-        return store.get(acctNo);
+    public Account findByAccountNumber(String accountNo) {
+        return store.get(accountNo);
     }
 
     @Override

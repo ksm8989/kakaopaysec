@@ -109,8 +109,8 @@ public class TransactionAggregateController {
                 if ("year".equals(key)) {
                     continue;
                 }
-                Account acct = findService.getAccount(key);
-                String placeCd = acct.getPlaceCd();
+                Account account = accountFinder.findBy(key);
+                String placeCd = account.getPlaceCd();
                 if (branchSumAmt.containsKey(placeCd)) {
                     branchSumAmt.put(placeCd, branchSumAmt.get(placeCd) + accountSumAmount.get(key));
                 } else {
@@ -139,7 +139,6 @@ public class TransactionAggregateController {
     @ApiOperation(value = "problem_4")
     public @ResponseBody
     SumAmtBranchResponse problem4(@RequestBody BrNameRequest brNameRequest) {
-        //BrNameRequest brNameRequest = new BrNameRequest("분당점");
         String branchName = brNameRequest.getBrName();
         if (branchName.equals("분당점")) {
             throw new BranchNotFoundException();
@@ -149,7 +148,7 @@ public class TransactionAggregateController {
 
         Map<String, Long> branchSumAmt = new HashMap<>();
         for (String key : acctSumAmt.keySet()) {
-            Account acct = findService.getAccount(key);
+            Account acct = accountFinder.findBy(key);
             String placeCd = acct.getPlaceCd();
             if (branchSumAmt.containsKey(placeCd)) {
                 branchSumAmt.put(placeCd, branchSumAmt.get(placeCd) + acctSumAmt.get(key));
