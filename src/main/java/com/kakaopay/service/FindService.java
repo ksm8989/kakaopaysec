@@ -7,8 +7,6 @@ import com.kakaopay.model.transaction.Transaction;
 import java.util.Map;
 
 public interface FindService {
-    Map<String, Account> getAllAccounts();
-
     Map<String, Transaction> getAllTransactions();
 
     Account getAccount(String acctNo);

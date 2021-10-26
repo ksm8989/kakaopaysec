@@ -2,6 +2,7 @@ package com.kakaopay.controller;
 
 import com.kakaopay.exception.BrCodeNotFoundException;
 import com.kakaopay.model.account.Account;
+import com.kakaopay.model.account.AccountFinder;
 import com.kakaopay.model.branch.Branch;
 import com.kakaopay.model.transaction.Transaction;
 import com.kakaopay.request.BrNameRequest;
@@ -18,10 +19,14 @@ import java.util.*;
 @RequestMapping("/test/")
 public class TransactionAggregateController {
     private FindService findService;
+    private AccountFinder accountFinder;
+    private AccountCalculator accountCalculator;
 
     @Autowired
-    public TransactionAggregateController(FindService findService) {
+    public TransactionAggregateController(FindService findService, AccountFinder accountFinder, AccountCalculator accountCalculator) {
         this.findService = findService;
+        this.accountFinder = accountFinder;
+        this.accountCalculator = accountCalculator;
     }
 
     @GetMapping("/problem_1")
@@ -29,15 +34,12 @@ public class TransactionAggregateController {
     public @ResponseBody List<SumAmtAccountByYearResponse> problem1(){
         List<String> years = Arrays.asList("2018", "2019");
 
-        // 연도별 계좌별 금액의 합
-        List<Map<String, Long>> acctSumAmtList = findAccountSumAmtByYear(years);
+        List<Map<String, Long>> acctSumAmtList = accountCalculator.sumByYear(years);
 
-        // 모든 계좌정보 조회
-        Map<String, Account> allAccount = findService.getAllAccounts();
-
+        Map<String, Account> allAccount = accountFinder.findAll();
 
         List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
-        String maxKey = "";
+        String maxKey;
         for(Map<String, Long> acctSumAmt : acctSumAmtList){
             long maxSum = 0;
             maxKey = "";
@@ -62,15 +64,11 @@ public class TransactionAggregateController {
     @ApiOperation(value = "problem_2")
     public @ResponseBody List<NoTransactionAccountByYearResponse> problem2(){
 
-        List<NoTransactionAccountByYearResponse> noTransactionAccountByYearResponseList = new ArrayList<>();
-        // 모든 계좌정보 조회
-        Map<String, Account> allAccount = findService.getAllAccounts();
-        // 2018, 2019
+        Map<String, Account> allAccount = accountFinder.findAll();
         List<String> years = Arrays.asList("2018", "2019");
-        // 연도별 계좌별 금액의 합
-        List<Map<String, Long>> acctSumAmtList = findAccountSumAmtByYear(years);
+        List<Map<String, Long>> acctSumAmtList = accountCalculator.sumByYear(years);
 
-
+        List<NoTransactionAccountByYearResponse> noTransactionAccountByYearResponseList = new ArrayList<>();
         for(Map<String, Long> acctSumAmt : acctSumAmtList){
             Map<String, Account> copyAccount = new HashMap<String, Account>(allAccount);
             for(String key : acctSumAmt.keySet()){
@@ -90,8 +88,7 @@ public class TransactionAggregateController {
         List<SumAmtBranchByYearResponse> list = new ArrayList<>();
         List<String> years = Arrays.asList("2018", "2019");
 
-        //계좌별 연도별 총 금액
-        List<Map<String, Long>> acctSumAmtList = findAccountSumAmtByYear(years);
+        List<Map<String, Long>> acctSumAmtList = accountCalculator.sumByYear(years);
 
         for(Map<String, Long> acctSumAmt : acctSumAmtList){
             Map<String, Long> branchSumAmt = new HashMap<>();
@@ -160,36 +157,6 @@ public class TransactionAggregateController {
 
         return sumAmtBranchResponse;
     }
-
-    /*
-     *  계좌별 연도별 합계 금액
-     * */
-    public List<Map<String, Long>> findAccountSumAmtByYear(List<String> years) {
-        Map<String, Transaction> transaction = findService.getAllTransactions();
-        List<Map<String, Long>> returnList = new ArrayList<>();
-
-        for(String year : years){
-            Map<String, Long> accountSumAmt = new HashMap<>();
-            for(String key : transaction.keySet()){
-                Transaction trs = transaction.get(key);
-                if(trs.getDate().substring(0, 4).equals(year) && !"Y".equals(trs.getCancelYn())){
-                    String acctNo = trs.getAcctNo();
-                    Long tradeAmt = trs.getAmount() - trs.getCommission();
-
-                    if(accountSumAmt.containsKey(acctNo)){
-                        accountSumAmt.put(acctNo, accountSumAmt.get(acctNo) + tradeAmt);
-                    }else{
-                        accountSumAmt.put(acctNo, tradeAmt);
-                    }
-                }
-            }
-            accountSumAmt.put("year", Long.parseLong(year));
-            returnList.add(accountSumAmt);
-        }
-
-        return returnList;
-    }
-
 
     /*
      *  계좌별 총 합계 금액

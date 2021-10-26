@@ -44,16 +44,6 @@ public class FindServiceImpl implements FindService{
     }
 
     @Override
-    public Map<String, Account> getAllAccounts() {
-        return accountRepository.findAllAccount();
-    }
-
-    @Override
-    public Map<String, Branch> getAllBranches() {
-        return branchRepository.findAllBranch();
-    }
-
-    @Override
     public Map<String, Transaction> getAllTransactions() {
         return transactionRepository.findAllTransaction();
     }
