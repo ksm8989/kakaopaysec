@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class AccountCalculator {
@@ -22,27 +23,23 @@ public class AccountCalculator {
     public List<Map<String, Long>> sumByYear(List<String> years) {
         Map<String, Transaction> allTransactions = findService.getAllTransactions();
 
-        List<Map<String, Long>> returnList = new ArrayList<>();
-
-        for(String year : years){
+        return years.stream().map(year -> {
             Map<String, Long> accountSumAmount = new HashMap<>();
             for(String key : allTransactions.keySet()){
                 Transaction transaction = allTransactions.get(key);
                 if(transaction.matchYear(year) && !transaction.canceled()){
                     String accountNumber = transaction.getAccountNumber();
-                    Long tradeAmt = transaction.getAmount() - transaction.getCommission();
+                    Long tradeAmount = transaction.getAmount() - transaction.getCommission();
 
                     if(accountSumAmount.containsKey(accountNumber)){
-                        accountSumAmount.put(accountNumber, accountSumAmount.get(accountNumber) + tradeAmt);
+                        accountSumAmount.put(accountNumber, accountSumAmount.get(accountNumber) + tradeAmount);
                     }else{
-                        accountSumAmount.put(accountNumber, tradeAmt);
+                        accountSumAmount.put(accountNumber, tradeAmount);
                     }
                 }
             }
             accountSumAmount.put("year", Long.parseLong(year));
-            returnList.add(accountSumAmount);
-        }
-
-        return returnList;
+            return accountSumAmount;
+        }).collect(Collectors.toList());
     }
 }
