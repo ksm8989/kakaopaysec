@@ -28,7 +28,6 @@ public class TransactionAggregateController {
     @ApiOperation(value = "problem_1")
     public @ResponseBody List<SumAmtAccountByYearResponse> problem1(){
         String maxKey = "";
-        List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
 
         List<String> years = Arrays.asList("2018", "2019");
 
@@ -39,6 +38,7 @@ public class TransactionAggregateController {
         Map<String, Account> allAccount = findService.getAllAccounts();
 
 
+        List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
         for(Map<String, Long> acctSumAmt : acctSumAmtList){
             long maxSum = 0;
             maxKey = "";
