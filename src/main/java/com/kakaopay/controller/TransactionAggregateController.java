@@ -17,8 +17,12 @@ import java.util.*;
 @Api(tags = "Sample")
 @RequestMapping("/test/")
 public class TransactionAggregateController {
-    @Autowired
     private FindService findService;
+
+    @Autowired
+    public TransactionAggregateController(FindService findService) {
+        this.findService = findService;
+    }
 
     @GetMapping("/problem_1")
     @ApiOperation(value = "problem_1")
