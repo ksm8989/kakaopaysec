@@ -5,7 +5,6 @@ import com.kakaopay.service.FindService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,25 +25,28 @@ public class AccountCalculator {
         return years.stream().map(year -> {
             Map<String, Long> accountSumAmount = new HashMap<>();
 
-            for(String key : allTransactions.keySet()){
-                Transaction transaction = allTransactions.get(key);
-                extracted(year, accountSumAmount, transaction);
-            }
+            allTransactions
+                    .values()
+                    .stream()
+                    .filter(transaction -> transaction.matchYear(year))
+                    .filter(transaction -> !transaction.canceled())
+                    .forEach(transaction -> {
+                        String accountNumber = transaction.getAccountNumber();
+
+                        if(existAccountSum(accountSumAmount, accountNumber)){
+                            Long beforeSum = accountSumAmount.get(accountNumber);
+                            accountSumAmount.put(accountNumber, beforeSum + transaction.getTradeAmount());
+                        }else{
+                            accountSumAmount.put(accountNumber, transaction.getTradeAmount());
+                        }
+                    });
+
             accountSumAmount.put("year", Long.parseLong(year));
             return accountSumAmount;
         }).collect(Collectors.toList());
     }
 
-    private void extracted(String year, Map<String, Long> accountSumAmount, Transaction transaction) {
-        if(transaction.matchYear(year) && !transaction.canceled()){
-            String accountNumber = transaction.getAccountNumber();
-            Long tradeAmount = transaction.getAmount() - transaction.getCommission();
-
-            if(accountSumAmount.containsKey(accountNumber)){
-                accountSumAmount.put(accountNumber, accountSumAmount.get(accountNumber) + tradeAmount);
-            }else{
-                accountSumAmount.put(accountNumber, tradeAmount);
-            }
-        }
+    private boolean existAccountSum(Map<String, Long> accountSumAmount, String accountNumber) {
+        return accountSumAmount.containsKey(accountNumber);
     }
 }

@@ -71,5 +71,7 @@ public class Transaction {
     public Boolean canceled() {
         return isCancel.equals("Y");
     }
-
+    public Long getTradeAmount() {
+        return amount - commission;
+    }
 }
