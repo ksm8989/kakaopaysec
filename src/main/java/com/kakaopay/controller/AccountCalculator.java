@@ -31,19 +31,23 @@ public class AccountCalculator {
                     .filter(transaction -> transaction.matchYear(year))
                     .filter(transaction -> !transaction.canceled())
                     .forEach(transaction -> {
-                        String accountNumber = transaction.getAccountNumber();
-
-                        if(existAccountSum(accountSumAmount, accountNumber)){
-                            Long beforeSum = accountSumAmount.get(accountNumber);
-                            accountSumAmount.put(accountNumber, beforeSum + transaction.getTradeAmount());
-                        }else{
-                            accountSumAmount.put(accountNumber, transaction.getTradeAmount());
-                        }
+                        sumAmount(accountSumAmount, transaction);
                     });
 
             accountSumAmount.put("year", Long.parseLong(year));
             return accountSumAmount;
         }).collect(Collectors.toList());
+    }
+
+    private void sumAmount(Map<String, Long> accountSumAmount, Transaction transaction) {
+        String accountNumber = transaction.getAccountNumber();
+
+        if(existAccountSum(accountSumAmount, accountNumber)){
+            Long beforeSum = accountSumAmount.get(accountNumber);
+            accountSumAmount.put(accountNumber, beforeSum + transaction.getTradeAmount());
+        }else{
+            accountSumAmount.put(accountNumber, transaction.getTradeAmount());
+        }
     }
 
     private boolean existAccountSum(Map<String, Long> accountSumAmount, String accountNumber) {

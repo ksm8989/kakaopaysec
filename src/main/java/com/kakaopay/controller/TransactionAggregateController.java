@@ -37,7 +37,6 @@ public class TransactionAggregateController {
         List<String> years = Arrays.asList("2018", "2019");
 
         List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
-
         Map<String, Account> allAccount = accountFinder.findAll();
 
         List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
