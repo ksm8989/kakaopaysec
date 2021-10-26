@@ -26,8 +26,7 @@ public class TransactionAggregateController {
         String maxKey = "";
         List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
 
-        // 2018, 2019
-        List<String> years = this.getYears();
+        List<String> years = Arrays.asList("2018", "2019");
 
         // 연도별 계좌별 금액의 합
         List<Map<String, Long>> acctSumAmtList = findAccountSumAmtByYear(years);
@@ -64,7 +63,7 @@ public class TransactionAggregateController {
         // 모든 계좌정보 조회
         Map<String, Account> allAccount = findService.getAllAccounts();
         // 2018, 2019
-        List<String> years = this.getYears();
+        List<String> years = Arrays.asList("2018", "2019");
         // 연도별 계좌별 금액의 합
         List<Map<String, Long>> acctSumAmtList = findAccountSumAmtByYear(years);
 
@@ -86,7 +85,7 @@ public class TransactionAggregateController {
     @ApiOperation(value = "problem_3")
     public @ResponseBody List<SumAmtBranchByYearResponse> problem3(){
         List<SumAmtBranchByYearResponse> list = new ArrayList<>();
-        List<String> years = this.getYears();
+        List<String> years = Arrays.asList("2018", "2019");
 
         //계좌별 연도별 총 금액
         List<Map<String, Long>> acctSumAmtList = findAccountSumAmtByYear(years);
@@ -157,10 +156,6 @@ public class TransactionAggregateController {
         }
 
         return sumAmtBranchResponse;
-    }
-
-    public List<String> getYears() {
-        return Arrays.asList("2018", "2019");
     }
 
     /*
