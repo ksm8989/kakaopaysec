@@ -27,15 +27,15 @@ public class AccountCalculator {
         for(String year : years){
             Map<String, Long> accountSumAmt = new HashMap<>();
             for(String key : allTransactions.keySet()){
-                Transaction trs = allTransactions.get(key);
-                if(trs.getDate().substring(0, 4).equals(year) && !"Y".equals(trs.getIsCancel())){
-                    String acctNo = trs.getAccountNumber();
-                    Long tradeAmt = trs.getAmount() - trs.getCommission();
+                Transaction transaction = allTransactions.get(key);
+                if(transaction.matchYear(year) && !"Y".equals(transaction.getIsCancel())){
+                    String accountNumber = transaction.getAccountNumber();
+                    Long tradeAmt = transaction.getAmount() - transaction.getCommission();
 
-                    if(accountSumAmt.containsKey(acctNo)){
-                        accountSumAmt.put(acctNo, accountSumAmt.get(acctNo) + tradeAmt);
+                    if(accountSumAmt.containsKey(accountNumber)){
+                        accountSumAmt.put(accountNumber, accountSumAmt.get(accountNumber) + tradeAmt);
                     }else{
-                        accountSumAmt.put(acctNo, tradeAmt);
+                        accountSumAmt.put(accountNumber, tradeAmt);
                     }
                 }
             }
