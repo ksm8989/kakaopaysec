@@ -25,21 +25,26 @@ public class AccountCalculator {
 
         return years.stream().map(year -> {
             Map<String, Long> accountSumAmount = new HashMap<>();
+
             for(String key : allTransactions.keySet()){
                 Transaction transaction = allTransactions.get(key);
-                if(transaction.matchYear(year) && !transaction.canceled()){
-                    String accountNumber = transaction.getAccountNumber();
-                    Long tradeAmount = transaction.getAmount() - transaction.getCommission();
-
-                    if(accountSumAmount.containsKey(accountNumber)){
-                        accountSumAmount.put(accountNumber, accountSumAmount.get(accountNumber) + tradeAmount);
-                    }else{
-                        accountSumAmount.put(accountNumber, tradeAmount);
-                    }
-                }
+                extracted(year, accountSumAmount, transaction);
             }
             accountSumAmount.put("year", Long.parseLong(year));
             return accountSumAmount;
         }).collect(Collectors.toList());
+    }
+
+    private void extracted(String year, Map<String, Long> accountSumAmount, Transaction transaction) {
+        if(transaction.matchYear(year) && !transaction.canceled()){
+            String accountNumber = transaction.getAccountNumber();
+            Long tradeAmount = transaction.getAmount() - transaction.getCommission();
+
+            if(accountSumAmount.containsKey(accountNumber)){
+                accountSumAmount.put(accountNumber, accountSumAmount.get(accountNumber) + tradeAmount);
+            }else{
+                accountSumAmount.put(accountNumber, tradeAmount);
+            }
+        }
     }
 }
