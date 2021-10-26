@@ -94,8 +94,7 @@ public class TransactionAggregateController {
 
     @GetMapping("/problem_3")
     @ApiOperation(value = "problem_3")
-    public @ResponseBody
-    List<SumAmtBranchByYearResponse> problem3() {
+    public @ResponseBody List<SumAmtBranchByYearResponse> problem3() {
         List<String> years = Arrays.asList("2018", "2019");
 
         List<SumAmtBranchByYearResponse> list = new ArrayList<>();

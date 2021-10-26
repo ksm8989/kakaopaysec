@@ -64,4 +64,8 @@ public class Transaction {
         this.commission = commission;
         this.isCancel = cancelYn;
     }
+
+    public Boolean matchYear(String year) {
+        return date.substring(0, 4).equals(year);
+    }
 }
