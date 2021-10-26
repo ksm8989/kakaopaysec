@@ -2,12 +2,12 @@ package com.kakaopay.service;
 
 import com.kakaopay.AppConfig;
 import com.kakaopay.model.account.Account;
-import com.kakaopay.model.account.AccountFinder;
 import com.kakaopay.model.account.AccountRepository;
 import com.kakaopay.model.branch.Branch;
 import com.kakaopay.model.branch.BranchRepository;
 import com.kakaopay.model.transaction.Transaction;
 import com.kakaopay.model.transaction.TransactionRepository;
+import com.kakaopay.service.account.AccountFinder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

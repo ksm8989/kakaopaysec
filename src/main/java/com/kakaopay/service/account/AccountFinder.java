@@ -1,5 +1,7 @@
-package com.kakaopay.model.account;
+package com.kakaopay.service.account;
 
+import com.kakaopay.model.account.Account;
+import com.kakaopay.model.account.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
