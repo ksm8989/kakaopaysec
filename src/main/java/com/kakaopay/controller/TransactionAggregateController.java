@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
 @RestController
 @Api(tags = "Sample")
 @RequestMapping("/test/")
@@ -31,7 +32,8 @@ public class TransactionAggregateController {
 
     @GetMapping("/problem_1")
     @ApiOperation(value = "problem_1")
-    public @ResponseBody List<SumAmtAccountByYearResponse> problem1(){
+    public @ResponseBody
+    List<SumAmtAccountByYearResponse> problem1() {
         List<String> years = Arrays.asList("2018", "2019");
 
         List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
@@ -40,19 +42,23 @@ public class TransactionAggregateController {
 
         List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
         String maxKey;
-        for(Map<String, Long> accountSumAmount : accountSumAmountList){
+        for (Map<String, Long> accountSumAmount : accountSumAmountList) {
             long maxSum = 0;
             maxKey = "";
-            for(String key : accountSumAmount.keySet()){
-                if(accountSumAmount.get(key) > maxSum){
+            for (String key : accountSumAmount.keySet()) {
+                if (accountSumAmount.get(key) > maxSum) {
                     maxSum = accountSumAmount.get(key);
                     maxKey = key;
                 }
             }
-            for(String key : allAccount.keySet()){
-                if(key.equals(maxKey)){
+            for (String key : allAccount.keySet()) {
+                if (key.equals(maxKey)) {
                     SumAmtAccountByYearResponse sumAmtAccountByYearResponse =
-                            new SumAmtAccountByYearResponse( Math.toIntExact(accountSumAmount.get("year")), allAccount.get(maxKey).getName(), maxKey, accountSumAmount.get(maxKey));
+                            new SumAmtAccountByYearResponse(
+                                    Math.toIntExact(accountSumAmount.get("year")),
+                                    allAccount.get(maxKey).getName(),
+                                    maxKey,
+                                    accountSumAmount.get(maxKey));
                     sumAmtAccountByYearResponseList.add(sumAmtAccountByYearResponse);
                 }
             }
@@ -62,20 +68,24 @@ public class TransactionAggregateController {
 
     @GetMapping("/problem_2")
     @ApiOperation(value = "problem_2")
-    public @ResponseBody List<NoTransactionAccountByYearResponse> problem2(){
+    public @ResponseBody
+    List<NoTransactionAccountByYearResponse> problem2() {
+        List<String> years = Arrays.asList("2018", "2019");
 
         Map<String, Account> allAccount = accountFinder.findAll();
-        List<String> years = Arrays.asList("2018", "2019");
         List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
 
         List<NoTransactionAccountByYearResponse> noTransactionAccountByYearResponseList = new ArrayList<>();
-        for(Map<String, Long> accountSumAmount : accountSumAmountList){
+        for (Map<String, Long> accountSumAmount : accountSumAmountList) {
             Map<String, Account> copyAccount = new HashMap(allAccount);
-            for(String key : accountSumAmount.keySet()){
+            for (String key : accountSumAmount.keySet()) {
                 copyAccount.remove(key);
             }
-            for(String key : copyAccount.keySet()){
-                NoTransactionAccountByYearResponse noTransactionAccountByYearResponse = new NoTransactionAccountByYearResponse(Math.toIntExact(accountSumAmount.get("year")), copyAccount.get(key).getName(), copyAccount.get(key).getAcctNo());
+            for (String key : copyAccount.keySet()) {
+                NoTransactionAccountByYearResponse noTransactionAccountByYearResponse = new NoTransactionAccountByYearResponse(
+                        Math.toIntExact(accountSumAmount.get("year")),
+                        copyAccount.get(key).getName(),
+                        copyAccount.get(key).getAcctNo());
                 noTransactionAccountByYearResponseList.add(noTransactionAccountByYearResponse);
             }
         }
@@ -84,28 +94,30 @@ public class TransactionAggregateController {
 
     @GetMapping("/problem_3")
     @ApiOperation(value = "problem_3")
-    public @ResponseBody List<SumAmtBranchByYearResponse> problem3(){
-        List<SumAmtBranchByYearResponse> list = new ArrayList<>();
+    public @ResponseBody
+    List<SumAmtBranchByYearResponse> problem3() {
         List<String> years = Arrays.asList("2018", "2019");
+
+        List<SumAmtBranchByYearResponse> list = new ArrayList<>();
 
         List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
 
-        for(Map<String, Long> accountSumAmount : accountSumAmountList){
+        for (Map<String, Long> accountSumAmount : accountSumAmountList) {
             Map<String, Long> branchSumAmt = new HashMap<>();
             List<SumAmtBranchResponse> sumAmtBranchList = new ArrayList<>();
-            for(String key : accountSumAmount.keySet()){
-                if("year".equals(key)){
+            for (String key : accountSumAmount.keySet()) {
+                if ("year".equals(key)) {
                     continue;
                 }
                 Account acct = findService.getAccount(key);
                 String placeCd = acct.getPlaceCd();
-                if(branchSumAmt.containsKey(placeCd)){
+                if (branchSumAmt.containsKey(placeCd)) {
                     branchSumAmt.put(placeCd, branchSumAmt.get(placeCd) + accountSumAmount.get(key));
-                }else{
+                } else {
                     branchSumAmt.put(placeCd, accountSumAmount.get(key));
                 }
             }
-            for(String key : branchSumAmt.keySet()){
+            for (String key : branchSumAmt.keySet()) {
                 Branch branch = findService.getBranch(key);
                 SumAmtBranchResponse sumAmtBranchResponse =
                         new SumAmtBranchResponse(branch.getName(), branch.getCode(), branchSumAmt.get(key));
@@ -125,29 +137,30 @@ public class TransactionAggregateController {
 
     @PostMapping("/problem_4")
     @ApiOperation(value = "problem_4")
-    public @ResponseBody SumAmtBranchResponse problem4(@RequestBody BrNameRequest brNameRequest){
+    public @ResponseBody
+    SumAmtBranchResponse problem4(@RequestBody BrNameRequest brNameRequest) {
         //BrNameRequest brNameRequest = new BrNameRequest("분당점");
         String branchName = brNameRequest.getBrName();
-        if(branchName.equals("분당점")){
+        if (branchName.equals("분당점")) {
             throw new BranchNotFoundException();
         }
         Map<String, Long> acctSumAmt = findAccountSumAmount();
         SumAmtBranchResponse sumAmtBranchResponse = new SumAmtBranchResponse();
 
         Map<String, Long> branchSumAmt = new HashMap<>();
-        for(String key : acctSumAmt.keySet()){
+        for (String key : acctSumAmt.keySet()) {
             Account acct = findService.getAccount(key);
             String placeCd = acct.getPlaceCd();
-            if(branchSumAmt.containsKey(placeCd)){
+            if (branchSumAmt.containsKey(placeCd)) {
                 branchSumAmt.put(placeCd, branchSumAmt.get(placeCd) + acctSumAmt.get(key));
-            }else{
+            } else {
                 branchSumAmt.put(placeCd, acctSumAmt.get(key));
             }
         }
 
-        for(String key : branchSumAmt.keySet()){
+        for (String key : branchSumAmt.keySet()) {
             Branch branch = findService.getBranch(key);
-            if(brNameRequest.getBrName().equals(branch.getName())){
+            if (brNameRequest.getBrName().equals(branch.getName())) {
                 sumAmtBranchResponse.setBrName(branch.getName());
                 sumAmtBranchResponse.setBrCode(branch.getCode());
                 sumAmtBranchResponse.setSumAmt(branchSumAmt.get(key));
@@ -161,17 +174,17 @@ public class TransactionAggregateController {
     /*
      *  계좌별 총 합계 금액
      * */
-    public Map<String, Long> findAccountSumAmount(){
+    public Map<String, Long> findAccountSumAmount() {
         Map<String, Transaction> transaction = findService.getAllTransactions();
         Map<String, Long> accountSumAmount = new HashMap<>();
-        for(String key : transaction.keySet()){
+        for (String key : transaction.keySet()) {
             Transaction trs = transaction.get(key);
-            if(!"Y".equals(trs.getIsCancel())){
+            if (!"Y".equals(trs.getIsCancel())) {
                 String accountNumber = trs.getAccountNumber();
                 Long tradeAmount = trs.getAmount() - trs.getCommission();
-                if(accountSumAmount.containsKey(accountNumber)){
+                if (accountSumAmount.containsKey(accountNumber)) {
                     accountSumAmount.put(accountNumber, accountSumAmount.get(accountNumber) + tradeAmount);
-                }else{
+                } else {
                     accountSumAmount.put(accountNumber, tradeAmount);
                 }
             }
@@ -180,7 +193,7 @@ public class TransactionAggregateController {
     }
 
     @ExceptionHandler(BranchNotFoundException.class)
-    public Object branchNotFound(){
+    public Object branchNotFound() {
         return new BranchNotFoundResponse("404", "br code not found error");
     }
 }
