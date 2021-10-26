@@ -36,12 +36,12 @@ public class TransactionAggregateController {
     List<SumAmtAccountByYearResponse> problem1() {
         List<String> years = Arrays.asList("2018", "2019");
 
-        List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
+        List<Map<String, Long>> yearSumResults = accountCalculator.sumByYear(years);
         Map<String, Account> allAccount = accountFinder.findAll();
 
         List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
         String maxKey;
-        for (Map<String, Long> accountSumAmount : accountSumAmountList) {
+        for (Map<String, Long> accountSumAmount : yearSumResults) {
             long maxSum = 0;
             maxKey = "";
             for (String key : accountSumAmount.keySet()) {
