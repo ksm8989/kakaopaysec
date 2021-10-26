@@ -160,10 +160,7 @@ public class TransactionAggregateController {
     }
 
     public List<String> getYears() {
-        List<String> years = new ArrayList<>();
-        years.add("2018");
-        years.add("2019");
-        return years;
+        return Arrays.asList("2018", "2019");
     }
 
     /*
