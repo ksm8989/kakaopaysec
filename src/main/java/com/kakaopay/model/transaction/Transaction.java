@@ -68,4 +68,8 @@ public class Transaction {
     public Boolean matchYear(String year) {
         return date.substring(0, 4).equals(year);
     }
+    public Boolean canceled() {
+        return isCancel.equals("Y");
+    }
+
 }

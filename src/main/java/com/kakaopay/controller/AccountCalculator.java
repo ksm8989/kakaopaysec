@@ -28,7 +28,7 @@ public class AccountCalculator {
             Map<String, Long> accountSumAmt = new HashMap<>();
             for(String key : allTransactions.keySet()){
                 Transaction transaction = allTransactions.get(key);
-                if(transaction.matchYear(year) && !"Y".equals(transaction.getIsCancel())){
+                if(transaction.matchYear(year) && !transaction.canceled()){
                     String accountNumber = transaction.getAccountNumber();
                     Long tradeAmt = transaction.getAmount() - transaction.getCommission();
 
