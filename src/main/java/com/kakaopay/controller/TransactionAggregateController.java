@@ -1,6 +1,6 @@
 package com.kakaopay.controller;
 
-import com.kakaopay.exception.BrCodeNotFoundException;
+import com.kakaopay.exception.BranchNotFoundException;
 import com.kakaopay.model.account.Account;
 import com.kakaopay.model.account.AccountFinder;
 import com.kakaopay.model.branch.Branch;
@@ -34,25 +34,25 @@ public class TransactionAggregateController {
     public @ResponseBody List<SumAmtAccountByYearResponse> problem1(){
         List<String> years = Arrays.asList("2018", "2019");
 
-        List<Map<String, Long>> acctSumAmtList = accountCalculator.sumByYear(years);
+        List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
 
         Map<String, Account> allAccount = accountFinder.findAll();
 
         List<SumAmtAccountByYearResponse> sumAmtAccountByYearResponseList = new ArrayList<>();
         String maxKey;
-        for(Map<String, Long> acctSumAmt : acctSumAmtList){
+        for(Map<String, Long> accountSumAmount : accountSumAmountList){
             long maxSum = 0;
             maxKey = "";
-            for(String key : acctSumAmt.keySet()){
-                if(acctSumAmt.get(key) > maxSum){
-                    maxSum = acctSumAmt.get(key);
+            for(String key : accountSumAmount.keySet()){
+                if(accountSumAmount.get(key) > maxSum){
+                    maxSum = accountSumAmount.get(key);
                     maxKey = key;
                 }
             }
             for(String key : allAccount.keySet()){
                 if(key.equals(maxKey)){
                     SumAmtAccountByYearResponse sumAmtAccountByYearResponse =
-                            new SumAmtAccountByYearResponse( Math.toIntExact(acctSumAmt.get("year")), allAccount.get(maxKey).getName(), maxKey, acctSumAmt.get(maxKey));
+                            new SumAmtAccountByYearResponse( Math.toIntExact(accountSumAmount.get("year")), allAccount.get(maxKey).getName(), maxKey, accountSumAmount.get(maxKey));
                     sumAmtAccountByYearResponseList.add(sumAmtAccountByYearResponse);
                 }
             }
@@ -66,16 +66,16 @@ public class TransactionAggregateController {
 
         Map<String, Account> allAccount = accountFinder.findAll();
         List<String> years = Arrays.asList("2018", "2019");
-        List<Map<String, Long>> acctSumAmtList = accountCalculator.sumByYear(years);
+        List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
 
         List<NoTransactionAccountByYearResponse> noTransactionAccountByYearResponseList = new ArrayList<>();
-        for(Map<String, Long> acctSumAmt : acctSumAmtList){
-            Map<String, Account> copyAccount = new HashMap<String, Account>(allAccount);
-            for(String key : acctSumAmt.keySet()){
+        for(Map<String, Long> accountSumAmount : accountSumAmountList){
+            Map<String, Account> copyAccount = new HashMap(allAccount);
+            for(String key : accountSumAmount.keySet()){
                 copyAccount.remove(key);
             }
             for(String key : copyAccount.keySet()){
-                NoTransactionAccountByYearResponse noTransactionAccountByYearResponse = new NoTransactionAccountByYearResponse(Math.toIntExact(acctSumAmt.get("year")), copyAccount.get(key).getName(), copyAccount.get(key).getAcctNo());
+                NoTransactionAccountByYearResponse noTransactionAccountByYearResponse = new NoTransactionAccountByYearResponse(Math.toIntExact(accountSumAmount.get("year")), copyAccount.get(key).getName(), copyAccount.get(key).getAcctNo());
                 noTransactionAccountByYearResponseList.add(noTransactionAccountByYearResponse);
             }
         }
@@ -88,21 +88,21 @@ public class TransactionAggregateController {
         List<SumAmtBranchByYearResponse> list = new ArrayList<>();
         List<String> years = Arrays.asList("2018", "2019");
 
-        List<Map<String, Long>> acctSumAmtList = accountCalculator.sumByYear(years);
+        List<Map<String, Long>> accountSumAmountList = accountCalculator.sumByYear(years);
 
-        for(Map<String, Long> acctSumAmt : acctSumAmtList){
+        for(Map<String, Long> accountSumAmount : accountSumAmountList){
             Map<String, Long> branchSumAmt = new HashMap<>();
             List<SumAmtBranchResponse> sumAmtBranchList = new ArrayList<>();
-            for(String key : acctSumAmt.keySet()){
+            for(String key : accountSumAmount.keySet()){
                 if("year".equals(key)){
                     continue;
                 }
                 Account acct = findService.getAccount(key);
                 String placeCd = acct.getPlaceCd();
                 if(branchSumAmt.containsKey(placeCd)){
-                    branchSumAmt.put(placeCd, branchSumAmt.get(placeCd) + acctSumAmt.get(key));
+                    branchSumAmt.put(placeCd, branchSumAmt.get(placeCd) + accountSumAmount.get(key));
                 }else{
-                    branchSumAmt.put(placeCd, acctSumAmt.get(key));
+                    branchSumAmt.put(placeCd, accountSumAmount.get(key));
                 }
             }
             for(String key : branchSumAmt.keySet()){
@@ -114,7 +114,7 @@ public class TransactionAggregateController {
             }
             sumAmtBranchList.sort(Comparator.reverseOrder());
             SumAmtBranchByYearResponse sumAmtBranchByYearResponse =
-                    new SumAmtBranchByYearResponse(Math.toIntExact(acctSumAmt.get("year")), sumAmtBranchList);
+                    new SumAmtBranchByYearResponse(Math.toIntExact(accountSumAmount.get("year")), sumAmtBranchList);
             list.add(sumAmtBranchByYearResponse);
 
         }
@@ -129,9 +129,9 @@ public class TransactionAggregateController {
         //BrNameRequest brNameRequest = new BrNameRequest("분당점");
         String branchName = brNameRequest.getBrName();
         if(branchName.equals("분당점")){
-            throw new BrCodeNotFoundException();
+            throw new BranchNotFoundException();
         }
-        Map<String, Long> acctSumAmt = findAccountSumAmt();
+        Map<String, Long> acctSumAmt = findAccountSumAmount();
         SumAmtBranchResponse sumAmtBranchResponse = new SumAmtBranchResponse();
 
         Map<String, Long> branchSumAmt = new HashMap<>();
@@ -161,28 +161,26 @@ public class TransactionAggregateController {
     /*
      *  계좌별 총 합계 금액
      * */
-    public Map<String, Long> findAccountSumAmt(){
+    public Map<String, Long> findAccountSumAmount(){
         Map<String, Transaction> transaction = findService.getAllTransactions();
-        List<Map<String, Long>> returnList = new ArrayList<>();
-        Map<String, Long> accountSumAmt = new HashMap<>();
+        Map<String, Long> accountSumAmount = new HashMap<>();
         for(String key : transaction.keySet()){
             Transaction trs = transaction.get(key);
-            if(!"Y".equals(trs.getCancelYn())){
-                String acctNo = trs.getAcctNo();
-                Long tradeAmt = trs.getAmount() - trs.getCommission();
-                if(accountSumAmt.containsKey(acctNo)){
-                    accountSumAmt.put(acctNo, accountSumAmt.get(acctNo) + tradeAmt);
+            if(!"Y".equals(trs.getIsCancel())){
+                String accountNumber = trs.getAccountNumber();
+                Long tradeAmount = trs.getAmount() - trs.getCommission();
+                if(accountSumAmount.containsKey(accountNumber)){
+                    accountSumAmount.put(accountNumber, accountSumAmount.get(accountNumber) + tradeAmount);
                 }else{
-                    accountSumAmt.put(acctNo, tradeAmt);
+                    accountSumAmount.put(accountNumber, tradeAmount);
                 }
             }
         }
-        return accountSumAmt;
+        return accountSumAmount;
     }
 
-    @ExceptionHandler(BrCodeNotFoundException.class)
-    public Object brCodeNotFound(){
-        BrCodeNotFoundResponse brCodeNotFoundResponse = new BrCodeNotFoundResponse("404", "br code not found error");
-        return brCodeNotFoundResponse;
+    @ExceptionHandler(BranchNotFoundException.class)
+    public Object branchNotFound(){
+        return new BranchNotFoundResponse("404", "br code not found error");
     }
 }

@@ -2,11 +2,11 @@ package com.kakaopay.model.transaction;
 
 public class Transaction {
     private String date;
-    private String acctNo;
+    private String accountNumber;
     private Long amount;
-    private String tradeNo;
+    private String transactionId;
     private Long commission;
-    private String cancelYn;
+    private String isCancel;
 
     public String getDate() {
         return date;
@@ -24,20 +24,20 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getAcctNo() {
-        return acctNo;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setAcctNo(String acctNo) {
-        this.acctNo = acctNo;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
-    public String getTradeNo() {
-        return tradeNo;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setTradeNo(String tradeNo) {
-        this.tradeNo = tradeNo;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public Long getCommission() {
@@ -48,20 +48,20 @@ public class Transaction {
         this.commission = commission;
     }
 
-    public String getCancelYn() {
-        return cancelYn;
+    public String getIsCancel() {
+        return isCancel;
     }
 
-    public void setCancelYn(String cancelYn) {
-        this.cancelYn = cancelYn;
+    public void setIsCancel(String isCancel) {
+        this.isCancel = isCancel;
     }
 
-    public Transaction(String date, String acctNo, String tradeNo, Long amount,  Long commission, String cancelYn) {
+    public Transaction(String date, String accountNumber, String transactionId, Long amount, Long commission, String cancelYn) {
         this.date = date;
         this.amount = amount;
-        this.acctNo = acctNo;
-        this.tradeNo = tradeNo;
+        this.accountNumber = accountNumber;
+        this.transactionId = transactionId;
         this.commission = commission;
-        this.cancelYn = cancelYn;
+        this.isCancel = cancelYn;
     }
 }

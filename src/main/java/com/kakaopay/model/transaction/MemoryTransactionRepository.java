@@ -9,7 +9,7 @@ public class MemoryTransactionRepository implements TransactionRepository {
 
     @Override
     public void save(Transaction transaction) {
-        String key = transaction.getDate() + transaction.getTradeNo();
+        String key = transaction.getDate() + transaction.getTransactionId();
         store.put(key, transaction);
     }
 

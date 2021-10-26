@@ -28,8 +28,8 @@ public class AccountCalculator {
             Map<String, Long> accountSumAmt = new HashMap<>();
             for(String key : allTransactions.keySet()){
                 Transaction trs = allTransactions.get(key);
-                if(trs.getDate().substring(0, 4).equals(year) && !"Y".equals(trs.getCancelYn())){
-                    String acctNo = trs.getAcctNo();
+                if(trs.getDate().substring(0, 4).equals(year) && !"Y".equals(trs.getIsCancel())){
+                    String acctNo = trs.getAccountNumber();
                     Long tradeAmt = trs.getAmount() - trs.getCommission();
 
                     if(accountSumAmt.containsKey(acctNo)){

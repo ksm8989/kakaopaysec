@@ -1,10 +1,10 @@
 package com.kakaopay.response;
 
-public class BrCodeNotFoundResponse {
+public class BranchNotFoundResponse {
     private String code;
     private String message;
 
-    public BrCodeNotFoundResponse(String code, String message) {
+    public BranchNotFoundResponse(String code, String message) {
         this.code = code;
         this.message = message;
     }
